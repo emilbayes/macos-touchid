@@ -63,6 +63,7 @@ void async_authenticate_execute (napi_env env, void* req_v) {
   async_authenticate_request * req = (async_authenticate_request *)req_v;
 
   @try {
+      dispatch_semaphore_t sema = dispatch_semaphore_create(0);
       LAContext* context = [[LAContext alloc] init];
       __block TouchIDResult result = kTouchIDResultWaiting;
       [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication
@@ -76,13 +77,15 @@ void async_authenticate_execute (napi_env env, void* req_v) {
           }
 
           result = success ? kTouchIDResultAllowed : kTouchIDResultFailed;
-          CFRunLoopWakeUp(CFRunLoopGetCurrent());
+          dispatch_semaphore_signal(sema);
       }];
 
-      while (result == kTouchIDResultWaiting)
-          CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
+      while (result == kTouchIDResultWaiting) {
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+      }
 
       req->result = result == kTouchIDResultAllowed;
+      dispatch_release(sema);
   }
   @catch (NSException* exception) {
       req->exception = [exception.reason UTF8String];
