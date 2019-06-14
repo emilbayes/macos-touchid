@@ -1,5 +1,7 @@
 # `macos-touchid`
 
+[![Build Status](https://travis-ci.org/emilbayes/macos-touchid.svg?branch=master)](https://travis-ci.org/emilbayes/macos-touchid)
+
 > Native module for working with macOS Local Authentication (eg. TouchID)
 
 ## Usage

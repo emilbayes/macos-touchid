@@ -2,17 +2,23 @@ sudo: false
 language: node_js
 node_js:
   - lts/*
-jobs:
-  include:
-    - stage: npm release
-      node_js: node
-      script: echo "Deploying to npm ..."
-      deploy:
-        provider: npm
-        email:
-          secure: "b06829nrZisknsVqnj+K0IyCT0dNegATSBMrGgZi5+hh541cxCqXX52ng9YE159FqTfuLHY5z2VIu3dYf6UzO9H9P/OabbDwgZqB0f7h0aABI/WV8MUl1J0xkZcT6s7OVUfno/0Sqkhb9IIG2N0zuq86P8/vL0dECj1OWZPhex8jviH9YpZJ22EIkVOapgGNK/Y7/BzfRDyuWepGv0bV9D8mc4wdtJBQWBwx8iaICB/jnOnvMgtd87nZrmmkFgRMrXSXFdaJB6Hw1DB0lBirgWbsUy8NMERx31qXivG5TnOxcN+7Q8FoRzzmJPWdBa3wYwae8Ocrd1Kq9mJJZdiFZTidPtlDJ9rxtGlHwkHAbFYsHMUvz4hj1MeS9PaW2Mm7u2k/G6uicdvf7PEy2QkYr6I3UaK2T9H6GX/1BQYawPNmsykQhdM8Gi7IeS+VjR7yc41K+qd2LfZHdOZAIkSGQeXnSBMoWfhAJXjUbk8DHzsu5Ju8DVJhh/FV8HxJ5dTEP9GvMcflRHrBgWEpSgqBcdf6c8M15bFhOHiLYxkdaJgSc1leg4nGCNfqRpxs8KFyG5UNG+WvFYWGsCtCEthuT6icDq1xRH2VA1G1vHPkHmiTktXu9FqBhQzvyOGi3Ae6ICzTT+awX0ePktPrpfjSPPnUKmw4Tw54DHBw9Qow9r0="
-        api_key: # 292a
-          secure: "Bx3QuPUpoAC+wtvtE7JcEKrCTeXJatW2TqXxY7+EsUOYQSaCm4ju9gjBe89IFmyLGDYwJJkzS33okmV4SFq1MLdp+wbxgY9w0bWPIHQ9K7l2klql5YZzZn1NLheSbflvwfDMEKh/rELZdGF3pQrpcj6bY4Homq1gfF5aUs+2krYgRQIjCDi7qOxAXnqucmA7BA/9gqWHPOI/QHYBERY0VneF0XAj93/hIZyNm67APbzL0YZX2xHnpjisPnQQ6skYuEO0zNuZi2bFjz1jxcpjBhyqlh0YZcotgmkYpUqmsiKfnBVlCkFgj84nxEZir++KV06dU4vsGXfVaX5Tz/jnfZORpQs6LKERfQrOE0u32HnZi3l27adPYVhX9P/riy1l4gaNea94AKKaarKfJExc9wgPt5TkEoA6cJZJGFMyB2j46r2pwsfqNBC7A0/4a2/6AmBUz3ivT/owBljB69KqrVlNOGfP+UCcr8kVMI+YEFGBW4qFeCSag0Zuse10vIviVtLQFFqJia6QnSiINtc9X5lvOCyDfElW/YM7YNmgtrdYay+MXQKkMbVoecFO9G8kNRHX+0mnOKODww73OT1CUPMBSNiyvnFuHAL9Lz9mnqereVLskkaydG9X2OfOYHAVf39IwQcS70EpEqF0Kfhn9pvw467bd/+jEVqjkduhzfc="
-        on:
-          tags: true
-          node: node
+
+os: osx
+
+before_deploy:
+  - ARCHIVE_NAME="${TRAVIS_TAG:-latest}-$TRAVIS_OS_NAME-`uname -m`.tar"
+  - npm run prebuild
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then npm run prebuild-ia32; ARCHIVE_NAME="${TRAVIS_TAG:-latest}-$TRAVIS_OS_NAME-all.tar";  fi
+  - tar --create --verbose --file="$ARCHIVE_NAME" --directory "$TRAVIS_BUILD_DIR/prebuilds" .
+
+deploy:
+  provider: releases
+  draft: false
+  prerelease: true
+  api_key:
+    secure: "tHpcEyO6pGOve2R9ssn7F8JmUyfECvOzqc+kBY4VVQW7BikgOFKu9yfSlvPfx3OtiifN4E5wYpZUla37COrhbxATRnkidh0GIcBAfS73tFYA+Il0OU0i2w12lpP6Z4ODb9TqKvLk0ZQcUZqiC9lKwX3LshLxps2My0NojA2qU50bxLVyhrYrXhDwPtthdqaWtDESXdRtnfWt/kHew5pFrSg9HbwF3Nj2TR2BzQtfpb/Ve4YjGEV5VXQ9vop2eursiUZtH4RxkkyliJDIxFCb6SxSFixuk4l+7yKzpo814gresLuNbREL7H6FtqZQcHPgZfQoU/zJjY6nqOslZ18ccTlg9jRpSgyH3akCqc6J8cueA2a0D+efRyfLWazkEy3Hw9ehket38kA2mWInUJij39pN3R+rQUL3CImm56ot6JuaiQoAu9GSLj6lwvkeXZXQzR57lBS0VkcBGLpH4nj1+gtCwRd6zHdxmzXbci2v5rjyduC5f+PBvLBvts7HXGt38VKyg3HAWaIqhLwNldlM/+/kiWFZhjU6EvAE1gMTv/VkByU89+Hw1v/m/KeNXwa7GuMWkygzBwHNJHHGoYpcV7pUbjghjrKLrAE5B9kKIb2MTtgVK/OwgRWm43mmKUxVpISLXM5ep3neDT6mjkDOG6vWFxznaJ5MO+fEtdH7++4="
+  file: "$ARCHIVE_NAME"
+  skip_cleanup: true
+  on:
+    tags: true
+    node: 'node'

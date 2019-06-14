@@ -18,7 +18,7 @@
   },
   "scripts": {
     "pretest": "standard",
-    "test": "node test.js",
+    "test": "true",
     "dev": "node-gyp rebuild",
     "clean": "rm -rf build",
     "install": "node-gyp-build",
