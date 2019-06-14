@@ -1,0 +1,27 @@
+{
+  'targets': [
+    {
+      'target_name': 'macos-touchid',
+      'include_dirs' : [
+        '<!(node -e \"require(\'napi-macros\')\")',
+      ],
+      'sources': [
+        'index.mm'
+      ],
+      'xcode_settings': {
+        'OTHER_LDFLAGS': [
+            '-framework CoreFoundation',
+            '-framework LocalAuthentication'
+        ],
+        'OTHER_CFLAGS': [
+          '-g',
+          '-O3'
+        ]
+      },
+      'cflags': [
+        '-g',
+        '-O3'
+      ]
+    }
+  ]
+}
