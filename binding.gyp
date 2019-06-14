@@ -1,7 +1,7 @@
 {
   'targets': [
     {
-      'target_name': 'macos-touchid',
+      'target_name': 'macos_touchid',
       'include_dirs' : [
         '<!(node -e \"require(\'napi-macros\')\")',
       ],
