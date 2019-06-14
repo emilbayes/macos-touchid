@@ -4,8 +4,6 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <LocalAuthentication/LocalAuthentication.h>
 #include <Security/Security.h>
-#include <inttypes.h>
-#include <stdint.h>
 #include <string.h>
 
 #define NAPI_RETURN_THROWS(call, message) \
