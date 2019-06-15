@@ -1,6 +1,6 @@
 {
   "name": "macos-touchid",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Native module for working with macOS Local Authentication (eg. TouchID)",
   "main": "index.js",
   "publishConfig": {
