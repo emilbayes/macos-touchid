@@ -6,7 +6,7 @@
         '<!(node -e \"require(\'napi-macros\')\")',
       ],
       'sources': [
-        'index.mm'
+        'index.m'
       ],
       'xcode_settings': {
         'OTHER_LDFLAGS': [

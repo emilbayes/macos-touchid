@@ -57,7 +57,7 @@ typedef struct async_authenticate_request {
   char * error;
   size_t len;
   const char * exception;
-} async_read_timeout_request;
+} async_authenticate_request;
 
 void async_authenticate_execute (napi_env env, void* req_v) {
   async_authenticate_request * req = (async_authenticate_request *)req_v;
@@ -126,7 +126,6 @@ cleanup:
   NAPI_STATUS_THROWS(napi_delete_reference(env, req->cb));
   NAPI_STATUS_THROWS(napi_delete_async_work(env, req->task));
   free(req);
-  return void();
 }
 
 NAPI_METHOD(authenticate) {
